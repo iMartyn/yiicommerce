@@ -16,6 +16,7 @@ return array(
 	'import'=>array(
 		'application.models.*',
 		'application.components.*',
+		'ext.gtc.components.*', //Gii Template collections
 	),
 
 	'modules'=>array(
@@ -25,6 +26,9 @@ return array(
 			'password'=>'yiicommerce',
 		 	// If removed, Gii defaults to localhost only. Edit carefully to taste.
 			'ipFilters'=>array('127.0.0.1','::1'),
+			'generatorPaths'=>array(
+			        'ext.gtc', //extensions/Gii Template from https://github.com/schmunk42/gii-template-collection
+                        ),
 		),
 	),
 
