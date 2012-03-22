@@ -1,21 +1,15 @@
-﻿<?php
+<?php
 /**
- * Action Generator.
+ * Portlet Generator.
  *
  * @author Stefan Volkmar <volkmar_yii@email.de>
- * @link http://www.yiiframework.com/extension/yii-class-generator-suite/
+ * @link http://www.yiiframework.com/extension/yii-generator-collection/
  * @license BSD
  */
 
-Yii::setPathOfAlias('PortletGenerator',dirname(__FILE__));
 class PortletGenerator extends CCodeGenerator
 {
     public $codeModel='ext.gtc.portlet.PortletCode';
-
-    public function actionPreview()
-    {
-        $parser=new CMarkdownParser;
-        echo $parser->safeTransform($_POST['PortletCode'][$_GET['attribute']]);
-    }
+   
 }
 ?>
