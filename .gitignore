@@ -3,3 +3,4 @@
 *.php~
 base/assets
 framework
+protected/runtime
