@@ -1,0 +1,5 @@
+# I use an editor that creates ~ backup files... so...
+*~
+*.php~
+base/assets
+framework
