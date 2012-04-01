@@ -17,6 +17,7 @@ return array(
 		'application.models.*',
 		'application.components.*',
 		'ext.gtc.components.*', //Gii Template collections
+                'application.extensions.phpass.*', //PHPPass 
 	),
 
 	'modules'=>array(
@@ -55,6 +56,12 @@ return array(
 			'password' => 'yii',
 			'charset' => 'utf8',
 		),
+                // PhPass hasher
+                'hasher'=>array(
+                    'class'=>'Phpass',
+                    'hashPortable'=>true,
+                    'hashCostLog2'=>10, 
+                ),
 		'errorHandler'=>array(
 			// use 'site/error' action to display errors
             'errorAction'=>'site/error',
@@ -64,14 +71,12 @@ return array(
 			'routes'=>array(
 				array(
 					'class'=>'CFileLogRoute',
-					'levels'=>'error, warning',
+					'levels'=>'error, warning,trace',
 				),
 				// uncomment the following to show log messages on web pages
-				/*
 				array(
 					'class'=>'CWebLogRoute',
 				),
-				*/
 			),
 		),
 	),
