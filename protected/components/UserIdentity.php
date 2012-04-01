@@ -26,7 +26,7 @@ class UserIdentity extends CUserIdentity {
         else if (!$this->testpassword($this->password, $record->customers_password))
             $this->errorCode = self::ERROR_PASSWORD_INVALID;
         else {
-            yii::log('Authenticated successfully with method '.$this->getPasswordType(), 'trace', 'system.UserIdentity');
+            yii::log('Authenticated successfully with method '.$this->_passwordtype, 'trace', 'system.UserIdentity');
             $this->_id = $record->customers_id;
             $this->setState('title', $record->customers_firstname.' '.$record->customers_lastname);
             $this->errorCode = self::ERROR_NONE;
@@ -39,25 +39,31 @@ class UserIdentity extends CUserIdentity {
          * This function tests the plainpassword against a hashed password that 
          * could be in any number of hashes.
          */
-        yii::log("testpassword($plainpassword,$hashedpassword) called", 'trace', 'system.UserIdentity');
-        if (md5($plainpassword) == $hashedpassword) {
-            $this->_passwordtype = 'MD5';
+        if (Yii::app()->hasher->checkPassword($plainpassword, $hashedpassword)) {
+            $this->_passwordtype = 'NEWOSC';
             return true;
+        }
+        if (strpos($hashedpassword,':') !== false) {
+            list($hash,$salt) = explode(':',$hashedpassword);
+            if (md5($salt.$plainpassword) == $hash) {
+                $this->_passwordtype = 'OLDOSC';
+                return true;
+            }
+            if (sha1($salt.$plainpassword) == $hash) {
+                $this->_passwordtype = 'OLDOSC-SHA1';
+                return true;
+            }
+            if (hash('sha256',$salt.$plainpassword) == $hash) {
+                $this->_passwordtype = 'OLDOSC-SHA256';
+                return true;
+            }
         }
         if (sha1($plainpassword) == $hashedpassword) {
             $this->_passwordtype = 'SHA1';
             return true;
         }
-        if (strpos($hashedpassword,':') !== false) {
-            list($hash,$salt) = explode(':',$hashedpassword);
-            Yii::log('plain is '.$plainpassword.'     hash is '.$hash.'     salt is '.$salt, 'trace','system.UserIdentity');
-            if (md5($salt.$plainpassword) == $hash) {
-                $this->_passwordtype = 'OLDOSC';
-                return true;
-            }
-        }
-        if (Yii::app()->hasher->checkPassword($plainpassword, $hashedpassword)) {
-            $this->_passwordtype = 'NEWOSC';
+        if (md5($plainpassword) == $hashedpassword) {
+            $this->_passwordtype = 'MD5';
             return true;
         }
         return false;
@@ -70,6 +76,6 @@ class UserIdentity extends CUserIdentity {
  
     public function getPasswordType()
     {
-        return $this->_id;
+        return $this->_passwordtype;
     }
 }

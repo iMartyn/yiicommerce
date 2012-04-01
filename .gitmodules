@@ -1,0 +1,3 @@
+[submodule "protected/extensions/LightOpenIdYii"]
+	path = protected/extensions/LightOpenIdYii
+	url = git://github.com/hofrob/LightOpenIdYii.git

@@ -18,6 +18,7 @@ return array(
 		'application.components.*',
 		'ext.gtc.components.*', //Gii Template collections
                 'application.extensions.phpass.*', //PHPPass 
+                'ext.LightOpenIdYii.*', //Light OpenID for Yii
 	),
 
 	'modules'=>array(
@@ -59,8 +60,12 @@ return array(
                 // PhPass hasher
                 'hasher'=>array(
                     'class'=>'Phpass',
-                    'hashPortable'=>true,
+                    'hashPortable'=>false,
                     'hashCostLog2'=>10, 
+                ),
+                // LightOpenIdWrapper
+                'openid' => array(
+                    'class' => 'LightOpenIdWrapper',
                 ),
 		'errorHandler'=>array(
 			// use 'site/error' action to display errors
