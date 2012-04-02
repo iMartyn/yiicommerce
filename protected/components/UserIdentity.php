@@ -9,6 +9,8 @@ class UserIdentity extends CUserIdentity {
 
     private $_id;
     private $_passwordtype;
+    
+    const CURRENT_HIGHEST_PW_TYPE = 'NEWOSC';
 
     /**
      * Authenticates a user.
@@ -20,17 +22,36 @@ class UserIdentity extends CUserIdentity {
      */
     public function authenticate() {
         $_passwordtype = NULL;
-        $record = Customer::model()->findByAttributes(array('customers_email_address' => $this->username));
-        if ($record === null)
+        $adminrecord = Administrator::model()->findByAttributes(array('user_name' => $this->username));
+        $custrecord = Customer::model()->findByAttributes(array('customers_email_address' => $this->username));
+        if ($adminrecord === null && $custrecord === null)
             $this->errorCode = self::ERROR_USERNAME_INVALID;
-        else if (!$this->testpassword($this->password, $record->customers_password))
-            $this->errorCode = self::ERROR_PASSWORD_INVALID;
         else {
-            yii::log('Authenticated successfully with method '.$this->_passwordtype, 'trace', 'system.UserIdentity');
-            $this->_id = $record->customers_id;
-            $this->setState('title', $record->customers_firstname.' '.$record->customers_lastname);
-            $this->errorCode = self::ERROR_NONE;
-        }
+            if ($custrecord === null) {
+                $record = $adminrecord;
+                $passwordfield = 'user_password';
+                $idfield = 'id';
+                $namefield = 'user_name';
+            } else {
+                $record = $custrecord;
+                $passwordfield = 'customers_password';
+                $idfield = 'customers_id';
+                $namefield = 'customers_firstname';
+            }
+            if (!$this->testpassword($this->password, $record->$passwordfield)) {
+                $this->errorCode = self::ERROR_PASSWORD_INVALID;
+            } else {
+                yii::log('Authenticated successfully with method '.$this->_passwordtype, 'trace', 'system.UserIdentity');
+                if ($this->_passwordtype != CURRENT_HIGHEST_PW_TYPE) {
+                    yii::log('Method '.$this->_passwordtype.' outdated, updating', 'trace', 'system.UserIdentity');
+                    $record->setPasswordHash($this->password);
+                    $record->update();
+                }
+                $this->_id = $record->$idfield;
+                $this->setState('title', $record->$namefield);
+                $this->errorCode = self::ERROR_NONE;
+            }
+        }       
         return !$this->errorCode;
     }
     

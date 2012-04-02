@@ -1,10 +1,10 @@
 <?php
 
 // auto-loading fix
-Yii::setPathOfAlias('Customer', dirname(__FILE__));
-Yii::import('Customer.*');
+Yii::setPathOfAlias('Administrator', dirname(__FILE__));
+Yii::import('Administrator.*');
 
-class Customer extends BaseCustomer
+class Administrator extends BaseAdministrator
 {
 	// Add your model-specific methods here. This file will not be overriden by gtc except you force it.
 	public static function model($className=__CLASS__)
@@ -18,7 +18,7 @@ class Customer extends BaseCustomer
 	}
 
 	public function __toString() {
-		return (string) $this->customers_gender;
+		return (string) $this->user_name;
 
 	}
 
@@ -54,7 +54,7 @@ class Customer extends BaseCustomer
          */
         public function setPasswordHash($plaintextpassword)
         {
-            $this->customers_password = Yii::app()->hasher->hashPassword($plaintextpassword);
+            $this->user_password = Yii::app()->hasher->hashPassword($plaintextpassword);
         }
 
 }

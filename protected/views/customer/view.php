@@ -27,7 +27,6 @@ $this->menu=array(
 		'customers_default_address_id',
 		'customers_telephone',
 		'customers_fax',
-		'customers_password',
 		'customers_newsletter',
 	),
 )); ?>
