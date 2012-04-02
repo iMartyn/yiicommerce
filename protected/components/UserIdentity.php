@@ -42,7 +42,7 @@ class UserIdentity extends CUserIdentity {
                 $this->errorCode = self::ERROR_PASSWORD_INVALID;
             } else {
                 yii::log('Authenticated successfully with method '.$this->_passwordtype, 'trace', 'system.UserIdentity');
-                if ($this->_passwordtype != CURRENT_HIGHEST_PW_TYPE) {
+                if ($this->_passwordtype != UserIdentity::CURRENT_HIGHEST_PW_TYPE) {
                     yii::log('Method '.$this->_passwordtype.' outdated, updating', 'trace', 'system.UserIdentity');
                     $record->setPasswordHash($this->password);
                     $record->update();
