@@ -11,9 +11,11 @@ Don’t give up hope, there is still a place in my heart for YiiCommerce.
 Note about passwords :-
 
 YiiCommerce tries to authenticate customers and admins using hashing in the following order :-
-* New osCommerce style - phpass but by default NOT portable libraries - phpass will read portable hashes but as we require 5.3 for yiicommerce, new passwords will be stored in the most secure ways first
+* New osCommerce style - phpass but by default NOT portable libraries - phpass will read portable hashes but as we require 5.3 for yiicommerce, new passwords will be stored in the most secure way first (i.e. BLOWFISH)
 * Old osCommerce style - salt + password, separated by a colon. it starts with md5, then sha1, then sha256 - I'm not aware of any patches that use anything other than md5 but if there is and it's not on that list, the UserIdentity class can be altered. 
 * Plain sha1 - password unsalted - useful for adding yourself into the db
 * Plain md5 - password unsalted - also useful for the above reasons.
 
-The system will automatically update anything less than a phpass password to the latest password on successful login.
+The system will by default automatically update anything less than a phpass password to the latest password on successful login.
+
+Note that admins have usernames without an @ symbol and and customers have logins of their email address

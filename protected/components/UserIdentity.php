@@ -9,8 +9,28 @@ class UserIdentity extends CUserIdentity {
 
     private $_id;
     private $_passwordtype;
+    private $_strongesthash;
     
-    const CURRENT_HIGHEST_PW_TYPE = 'NEWOSC';
+    /**
+     * Only sets a default strongest pass hash, see CUserIdentity::__construct();
+     * @param type $username
+     * @param type $password
+     */
+    function __construct($username, $password) {
+        parent::__construct($username, $password);
+        $this->_strongesthash = 'NEWOSC-BLOWFISH';
+    }
+    
+    /**
+     * Sets a new strongest hash type - I'm happy with phpass but some may want
+     * to provide a better hash method and the module should only reset if it's 
+     * not that.  Remember that you'll need to override the 
+     * Customer::setPasswordHash() and Administrator::setPasswordHash() methods
+     * @param string $newhashtype
+     */
+    public function setHighestPasswordHash(string $newhashtype) {
+        $this->_strongesthash = $newhashtype;
+    }
 
     /**
      * Authenticates a user.
@@ -42,7 +62,7 @@ class UserIdentity extends CUserIdentity {
                 $this->errorCode = self::ERROR_PASSWORD_INVALID;
             } else {
                 yii::log('Authenticated successfully with method '.$this->_passwordtype, 'trace', 'system.UserIdentity');
-                if ($this->_passwordtype != UserIdentity::CURRENT_HIGHEST_PW_TYPE) {
+                if ($this->_passwordtype != $this->_strongesthash) {
                     yii::log('Method '.$this->_passwordtype.' outdated, updating', 'trace', 'system.UserIdentity');
                     $record->setPasswordHash($this->password);
                     $record->update();
@@ -55,13 +75,24 @@ class UserIdentity extends CUserIdentity {
         return !$this->errorCode;
     }
     
+    /**
+     * This function tests the plainpassword against a hashed password that 
+     * could be in any number of hashes.  Override if necessary :-)
+     * @param type $plainpassword
+     * @param type $hashedpassword
+     * @return boolean
+     */
     protected function testpassword($plainpassword,$hashedpassword) {
-        /*
-         * This function tests the plainpassword against a hashed password that 
-         * could be in any number of hashes.
-         */
         if (Yii::app()->hasher->checkPassword($plainpassword, $hashedpassword)) {
-            $this->_passwordtype = 'NEWOSC';
+            if (strpos($hashedpassword,'$2a$') === 0) {
+                $this->_passwordtype = 'NEWOSC-BLOWFISH';
+            } elseif ($hashedpassword[0] === '_') {
+                $this->_passwordtype = 'NEWOSC-EXTDES';
+            } elseif (strpos($hashedpassword,'$P$') === 0) {
+                $this->_passwordtype = 'NEWOSC-PORTABLE';
+            } else {
+                $this->_passwordtype = 'UNKNOWN';
+            }
             return true;
         }
         if (strpos($hashedpassword,':') !== false) {
