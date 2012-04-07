@@ -29,7 +29,8 @@
 	<br />
 
 	<b><?php echo CHtml::encode($data->getAttributeLabel('productCount')); ?>:</b>
-	<?php echo CHtml::encode($data->productCount); ?>
+	<?php echo CHtml::encode($data->productCount);
+            echo ((int)$data->productCount > 0) ? CHtml::link(CHtml::encode('...'), array('view', 'id'=>$data->categories_id)):""; ?>
 	<br />
 
 

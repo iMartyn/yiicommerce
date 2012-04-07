@@ -11,6 +11,10 @@
 	<b><?php echo CHtml::encode($data->getAttributeLabel('products_model')); ?>:</b>
 	<?php echo CHtml::encode($data->products_model); ?>
 	<br />
+        
+	<b><?php echo CHtml::encode($data->getAttributeLabel('products_name')); ?>:</b>
+	<?php echo CHtml::encode($data->products_name); ?>
+	<br />
 
 	<b><?php echo CHtml::encode($data->getAttributeLabel('products_image')); ?>:</b>
 	<?php echo CHtml::encode($data->products_image); ?>
@@ -26,6 +30,10 @@
 
 	<b><?php echo CHtml::encode($data->getAttributeLabel('products_last_modified')); ?>:</b>
 	<?php echo CHtml::encode($data->products_last_modified); ?>
+	<br />
+
+	<b><?php echo CHtml::encode($data->getAttributeLabel('categoriesCount')); ?>:</b>
+	<?php echo CHtml::encode($data->categoriesCount); ?>
 	<br />
 
 	<?php /*

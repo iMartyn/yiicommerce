@@ -49,25 +49,37 @@ abstract class BaseProduct extends CActiveRecord{
 	public function relations()
 	{
 		return array(
+                    'categories'=>array(self::MANY_MANY, 'Category', 'products_to_categories(products_id,categories_id)'),
+                    'categoriesCount' => array(self::STAT, 'Category', 'products_to_categories(products_id,categories_id)'),
+                    'description'=>array(self::HAS_ONE, 'ProductDescription', 'products_id'),
 		);
 	}
+        
+        public function getCategoryNames()
+        {
+                $out=CHtml::listData($this->categories,'categories_id','description');
+                return implode(',', $out);
+        }
 
 	public function attributeLabels()
 	{
 		return array(
 			'products_id' => Yii::t('app', 'Products'),
-			'products_quantity' => Yii::t('app', 'Products Quantity'),
-			'products_model' => Yii::t('app', 'Products Model'),
-			'products_image' => Yii::t('app', 'Products Image'),
-			'products_price' => Yii::t('app', 'Products Price'),
-			'products_date_added' => Yii::t('app', 'Products Date Added'),
-			'products_last_modified' => Yii::t('app', 'Products Last Modified'),
-			'products_date_available' => Yii::t('app', 'Products Date Available'),
-			'products_weight' => Yii::t('app', 'Products Weight'),
-			'products_status' => Yii::t('app', 'Products Status'),
-			'products_tax_class_id' => Yii::t('app', 'Products Tax Class'),
+			'products_quantity' => Yii::t('app', 'Quantity'),
+			'products_model' => Yii::t('app', 'Model'),
+			'products_image' => Yii::t('app', 'Image'),
+			'products_price' => Yii::t('app', 'Price'),
+			'products_date_added' => Yii::t('app', 'Date Added'),
+			'products_last_modified' => Yii::t('app', 'Last Modified'),
+			'products_date_available' => Yii::t('app', 'Date Available'),
+			'products_weight' => Yii::t('app', 'Weight'),
+			'products_status' => Yii::t('app', 'Status'),
+			'products_tax_class_id' => Yii::t('app', 'Tax Class'),
 			'manufacturers_id' => Yii::t('app', 'Manufacturers'),
-			'products_ordered' => Yii::t('app', 'Products Ordered'),
+			'products_ordered' => Yii::t('app', 'Ordered Count'),
+			'products_name' => Yii::t('app', 'Name'),
+			'products_description' => Yii::t('app', 'Description'),
+                        'categoryNames' => Yii::t('app', 'In Categories'),
 		);
 	}
 
@@ -89,15 +101,32 @@ abstract class BaseProduct extends CActiveRecord{
 		$criteria->compare('products_tax_class_id', $this->products_tax_class_id);
 		$criteria->compare('manufacturers_id', $this->manufacturers_id);
 		$criteria->compare('products_ordered', $this->products_ordered);
+                $criteria->compare('products_description', $this->description->products_description);
+                $criteria->compare('products_name', $this->description->products_name);
 
 		return new CActiveDataProvider(get_class($this), array(
 			'criteria'=>$criteria,
 		));
 	}
+        
+        public function getproducts_description() {
+                return strip_tags($this->description->products_description);
+        }
+        
+        public function getproducts_name() {
+                return $this->description->products_name;
+        }
+        
+        /**
+         * Yii needs this because it needs it.
+         */
+        public function getid() {
+                return $this->products_id;
+        }
 	
 	public function get_label()
 	{
-		return '#'.$this->products_id;		
+		return $this->description->products_name;		
 		
 			}
 	

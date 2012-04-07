@@ -28,3 +28,32 @@ $this->menu=array(
                 'productCount',
 	),
 )); ?>
+
+<?php if ((int)$model->productCount > 0) : ?>
+
+<h2>Products that are in this category :- </h2>
+    <?php
+    
+$this->widget('zii.widgets.grid.CGridView', array(
+	'dataProvider' => new CArrayDataProvider($model->products),
+	'columns' => array(
+		array(
+			'name' => 'products_id',
+			'type' => 'raw',
+			'value' => 'CHtml::link(CHtml::encode($data->products_id), \'../product/\'.$data->products_id);',
+		),
+		array(
+			'name' => 'products_name',
+			'type' => 'raw',
+			'value' => 'CHtml::encode($data->products_name)',
+		),
+		array(
+			'name' => 'products_description',
+			'type' => 'raw',
+			'value' => 'CHtml::encode($data->products_description)',
+		),
+	),
+));
+?>
+
+    <?php endif ?>

@@ -21,6 +21,8 @@ $this->menu=array(
 		'products_id',
 		'products_quantity',
 		'products_model',
+                'products_name',
+                'products_description',
 		'products_image',
 		'products_price',
 		'products_date_added',
@@ -31,5 +33,7 @@ $this->menu=array(
 		'products_tax_class_id',
 		'manufacturers_id',
 		'products_ordered',
+                'categoriesCount',
+                'categoryNames'
 	),
 )); ?>
